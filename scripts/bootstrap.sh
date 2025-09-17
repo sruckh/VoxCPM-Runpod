@@ -32,6 +32,7 @@ install_system_packages() {
         python3 \
         python3-venv \
         python3-pip \
+        python3-dev \
         build-essential \
         ffmpeg \
         libsndfile1 \
