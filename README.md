@@ -6,14 +6,17 @@ This repository provides the minimal container scaffolding required to launch th
 
 * **Base image:** `nvidia/cuda:12.8.0-cudnn-devel-ubuntu24.04` keeps GPU support without pre-installing Python tooling.
 * **Bootstrap script:** `/usr/local/bin/bootstrap.sh` runs whenever the container starts. On first launch it:
-  1. Installs system dependencies with `apt` (Python 3.10, git, ffmpeg, etc.).
+  1. Installs system dependencies with `apt` (Python 3.12, git, ffmpeg, etc.).
   2. Clones or updates the upstream VoxCPM repository into `/workspace/VoxCPM`.
-  3. Creates a virtual environment in `/workspace/.venv` and installs VoxCPM with all Python dependencies. `PIP_EXTRA_INDEX_URL` defaults to the CUDA 12.4 PyTorch wheel index so GPU wheels are retrieved automatically.
+  3. Creates a virtual environment in `/workspace/.venv` and installs VoxCPM with all Python dependencies. `PIP_EXTRA_INDEX_URL` defaults to the CUDA 12.4 PyTorch wheel index and `PIP_PREFER_BINARY=1` nudges pip towards pre-built wheels to avoid noisy source builds.
   4. Writes `/workspace/.env` which can be customised before starting workloads.
 
 A marker file (`/workspace/.voxcpm_bootstrapped`) prevents repeat installations. Delete it if you want to re-run the full setup.
 
-After bootstrapping, the script sources the virtual environment and, if no command is provided, keeps the container alive with `tail -f /dev/null`. Supplying a command to the container runs it inside the prepared environment.
+After bootstrapping, the script sources the virtual environment and:
+
+* Runs any command supplied to the container using the prepared environment.
+* Otherwise defaults to launching `python app.py` inside `/workspace/VoxCPM`, which starts the upstream Gradio interface immediately.
 
 ## Running on RunPod
 
@@ -33,6 +36,8 @@ Environment variables control bootstrap behaviour:
 * `REPO_DIR` – change where VoxCPM is cloned.
 * `PIP_EXTRA_INDEX_URL` – point to a different PyTorch wheel index if needed.
 * `HF_HOME`, `TORCH_HOME`, `OMP_NUM_THREADS` – edit `/workspace/.env` after the first start to tweak caching and runtime settings.
+* `PIP_PREFER_BINARY` – opt out of preferring wheels if you need to force source installs.
+* `DEFAULT_CMD` – change the default command executed when the container starts with no arguments (defaults to `python app.py`).
 
 Provide a command to the container to start services automatically:
 

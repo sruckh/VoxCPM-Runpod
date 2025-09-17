@@ -7,7 +7,9 @@ REPO_DIR="${REPO_DIR:-$WORKSPACE/VoxCPM}"
 VENV_DIR="${VENV_DIR:-$WORKSPACE/.venv}"
 MARKER_FILE="${MARKER_FILE:-$WORKSPACE/.voxcpm_bootstrapped}"
 PIP_EXTRA_INDEX_URL="${PIP_EXTRA_INDEX_URL:-https://download.pytorch.org/whl/cu124}"
+PIP_PREFER_BINARY="${PIP_PREFER_BINARY:-1}"
 ENV_FILE="$WORKSPACE/.env"
+DEFAULT_CMD="${DEFAULT_CMD:-python app.py}"
 
 if [ "${FORCE_BOOTSTRAP:-0}" = "1" ]; then
     rm -f "$MARKER_FILE"
@@ -64,8 +66,8 @@ create_venv() {
 
 install_python_packages() {
     log "Installing VoxCPM python dependencies"
-    export PIP_EXTRA_INDEX_URL
-    pip install --no-cache-dir -e "$REPO_DIR"
+    export PIP_EXTRA_INDEX_URL PIP_PREFER_BINARY
+    pip install --no-cache-dir --prefer-binary -e "$REPO_DIR"
 }
 
 write_env_hint() {
@@ -109,6 +111,9 @@ fi
 if [ "$#" -gt 0 ]; then
     exec "$@"
 else
-    log "No command provided, keeping container alive"
-    exec tail -f /dev/null
+    if [ -d "$REPO_DIR" ]; then
+        cd "$REPO_DIR"
+    fi
+    log "No command provided, defaulting to: $DEFAULT_CMD"
+    exec bash -lc "$DEFAULT_CMD"
 fi
