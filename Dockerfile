@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.1.0-cudnn9-runtime-ubuntu22.04
+FROM nvidia/cuda:12.8.0-cudnn-devel-ubuntu24.04
 
 ENV PIP_NO_CACHE_DIR=1 \
     PYTHONUNBUFFERED=1 \

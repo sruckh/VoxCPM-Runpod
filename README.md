@@ -4,11 +4,11 @@ This repository provides the minimal container scaffolding required to launch th
 
 ## Image layout
 
-* **Base image:** `nvidia/cuda:12.1.0-cudnn9-runtime-ubuntu22.04` keeps GPU support without pre-installing Python tooling.
+* **Base image:** `nvidia/cuda:12.8.0-cudnn-devel-ubuntu24.04` keeps GPU support without pre-installing Python tooling.
 * **Bootstrap script:** `/usr/local/bin/bootstrap.sh` runs whenever the container starts. On first launch it:
   1. Installs system dependencies with `apt` (Python 3.10, git, ffmpeg, etc.).
   2. Clones or updates the upstream VoxCPM repository into `/workspace/VoxCPM`.
-  3. Creates a virtual environment in `/workspace/.venv` and installs VoxCPM with all Python dependencies. `PIP_EXTRA_INDEX_URL` defaults to the CUDA 12.1 PyTorch wheel index so GPU wheels are retrieved automatically.
+  3. Creates a virtual environment in `/workspace/.venv` and installs VoxCPM with all Python dependencies. `PIP_EXTRA_INDEX_URL` defaults to the CUDA 12.4 PyTorch wheel index so GPU wheels are retrieved automatically.
   4. Writes `/workspace/.env` which can be customised before starting workloads.
 
 A marker file (`/workspace/.voxcpm_bootstrapped`) prevents repeat installations. Delete it if you want to re-run the full setup.

@@ -6,7 +6,7 @@ REPO_URL="${REPO_URL:-https://github.com/OpenBMB/VoxCPM.git}"
 REPO_DIR="${REPO_DIR:-$WORKSPACE/VoxCPM}"
 VENV_DIR="${VENV_DIR:-$WORKSPACE/.venv}"
 MARKER_FILE="${MARKER_FILE:-$WORKSPACE/.voxcpm_bootstrapped}"
-PIP_EXTRA_INDEX_URL="${PIP_EXTRA_INDEX_URL:-https://download.pytorch.org/whl/cu121}"
+PIP_EXTRA_INDEX_URL="${PIP_EXTRA_INDEX_URL:-https://download.pytorch.org/whl/cu124}"
 ENV_FILE="$WORKSPACE/.env"
 
 if [ "${FORCE_BOOTSTRAP:-0}" = "1" ]; then
