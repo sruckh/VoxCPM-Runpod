@@ -10,13 +10,14 @@ This repository provides the minimal container scaffolding required to launch th
   2. Clones or updates the upstream VoxCPM repository into `/workspace/VoxCPM`.
   3. Creates a virtual environment in `/workspace/.venv` and installs VoxCPM with all Python dependencies. `PIP_EXTRA_INDEX_URL` defaults to the CUDA 12.4 PyTorch wheel index and `PIP_PREFER_BINARY=1` nudges pip towards pre-built wheels to avoid noisy source builds.
   4. Writes `/workspace/.env` which can be customised before starting workloads.
+* **Runtime launcher:** `/usr/local/bin/run_voxcpm_demo.sh` imports the upstream Gradio app and launches it with `share=True` by default so the public Gradio link is created even if RunPod's proxy is unreliable.
 
 A marker file (`/workspace/.voxcpm_bootstrapped`) prevents repeat installations. Delete it if you want to re-run the full setup.
 
 After bootstrapping, the script sources the virtual environment and:
 
 * Runs any command supplied to the container using the prepared environment.
-* Otherwise defaults to launching `python app.py` inside `/workspace/VoxCPM`, which starts the upstream Gradio interface immediately.
+* Otherwise defaults to `run_voxcpm_demo.sh`, which launches the upstream Gradio interface with `share=True` so the Gradio tunnel link is returned reliably.
 
 ## Running on RunPod
 
@@ -37,13 +38,15 @@ Environment variables control bootstrap behaviour:
 * `PIP_EXTRA_INDEX_URL` – point to a different PyTorch wheel index if needed.
 * `HF_HOME`, `TORCH_HOME`, `OMP_NUM_THREADS` – edit `/workspace/.env` after the first start to tweak caching and runtime settings.
 * `PIP_PREFER_BINARY` – opt out of preferring wheels if you need to force source installs.
-* `DEFAULT_CMD` – change the default command executed when the container starts with no arguments (defaults to `python app.py`).
+* `DEFAULT_CMD` – change the default command executed when the container starts with no arguments (defaults to `run_voxcpm_demo.sh`).
+* `GRADIO_SHARE` – set to `false` if you prefer to disable Gradio's public tunnel.
+* `GRADIO_SERVER_NAME` / `GRADIO_SERVER_PORT` / `GRADIO_MAX_QUEUE` / `GRADIO_SHOW_ERROR` – tune how Gradio serves the demo.
 
 Provide a command to the container to start services automatically:
 
 ```bash
 docker run --rm -it gemneye/voxcpm-runpod:latest \
-  bash -lc "source /workspace/.venv/bin/activate && python app.py"
+  bash -lc "source /workspace/.venv/bin/activate && run_voxcpm_demo.sh"
 ```
 
 ## Local build and publish

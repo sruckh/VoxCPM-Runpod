@@ -9,7 +9,7 @@ MARKER_FILE="${MARKER_FILE:-$WORKSPACE/.voxcpm_bootstrapped}"
 PIP_EXTRA_INDEX_URL="${PIP_EXTRA_INDEX_URL:-https://download.pytorch.org/whl/cu124}"
 PIP_PREFER_BINARY="${PIP_PREFER_BINARY:-1}"
 ENV_FILE="$WORKSPACE/.env"
-DEFAULT_CMD="${DEFAULT_CMD:-python app.py}"
+DEFAULT_CMD="${DEFAULT_CMD:-run_voxcpm_demo.sh}"
 
 if [ "${FORCE_BOOTSTRAP:-0}" = "1" ]; then
     rm -f "$MARKER_FILE"

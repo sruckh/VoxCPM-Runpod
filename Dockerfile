@@ -8,7 +8,8 @@ ENV PIP_NO_CACHE_DIR=1 \
 WORKDIR /workspace
 
 COPY scripts/bootstrap.sh /usr/local/bin/bootstrap.sh
+COPY scripts/run_voxcpm_demo.sh /usr/local/bin/run_voxcpm_demo.sh
 
-RUN chmod +x /usr/local/bin/bootstrap.sh
+RUN chmod +x /usr/local/bin/bootstrap.sh /usr/local/bin/run_voxcpm_demo.sh
 
 ENTRYPOINT ["/usr/local/bin/bootstrap.sh"]
