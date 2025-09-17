@@ -43,6 +43,17 @@ install_system_packages() {
     update-ca-certificates
 }
 
+ensure_cuda_symlinks() {
+    local libdir="${CUDA_LIB_DIR:-/usr/lib/x86_64-linux-gnu}"
+    if [ -f "$libdir/libcuda.so.1" ] && [ ! -f "$libdir/libcuda.so" ]; then
+        log "Creating libcuda.so symlink in $libdir"
+        ln -s libcuda.so.1 "$libdir/libcuda.so"
+    fi
+    if [ -d "/usr/local/cuda/lib64" ]; then
+        ln -sf /usr/local/cuda/lib64 "$WORKSPACE/.cuda_lib64"
+    fi
+}
+
 clone_or_update_repo() {
     if [ ! -d "$REPO_DIR/.git" ]; then
         log "Cloning $REPO_URL"
@@ -83,6 +94,7 @@ ENVEOF
 main() {
     ensure_workspace
     install_system_packages
+    ensure_cuda_symlinks
     clone_or_update_repo
     create_venv
     install_python_packages

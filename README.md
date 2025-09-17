@@ -11,6 +11,7 @@ This repository provides the minimal container scaffolding required to launch th
   3. Creates a virtual environment in `/workspace/.venv` and installs VoxCPM with all Python dependencies. `PIP_EXTRA_INDEX_URL` defaults to the CUDA 12.4 PyTorch wheel index and `PIP_PREFER_BINARY=1` nudges pip towards pre-built wheels to avoid noisy source builds.
   4. Writes `/workspace/.env` which can be customised before starting workloads.
 * **Runtime launcher:** `/usr/local/bin/run_voxcpm_demo.sh` imports the upstream Gradio app and launches it with `share=True` by default so the public Gradio link is created even if RunPod's proxy is unreliable.
+* **GPU driver guardrails:** Bootstrap ensures a `libcuda.so` symlink exists when the NVIDIA runtime mounts the host driver, avoiding Triton/torch compile failures that expect that SONAME.
 
 A marker file (`/workspace/.voxcpm_bootstrapped`) prevents repeat installations. Delete it if you want to re-run the full setup.
 
@@ -41,6 +42,7 @@ Environment variables control bootstrap behaviour:
 * `DEFAULT_CMD` – change the default command executed when the container starts with no arguments (defaults to `run_voxcpm_demo.sh`).
 * `GRADIO_SHARE` – set to `false` if you prefer to disable Gradio's public tunnel.
 * `GRADIO_SERVER_NAME` / `GRADIO_SERVER_PORT` / `GRADIO_MAX_QUEUE` / `GRADIO_SHOW_ERROR` – tune how Gradio serves the demo.
+* `CUDA_LIB_DIR` – override the directory where the bootstrapper ensures `libcuda.so` points to `libcuda.so.1` (defaults to `/usr/lib/x86_64-linux-gnu`).
 
 Provide a command to the container to start services automatically:
 
